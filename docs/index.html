@@ -6,34 +6,22 @@
   <title>SOLONARAS — Christos Solonos | Interactive Solar Odyssey &amp; Living AI Portfolio</title>
   <meta name="description" content="Enter the Helios Core. An interactive WebGPU/TSL scrollytelling experience showcasing Christos Solonos (Solonaras) — Creator of Luna 5.0 Autonomous AI, AI Streaming Companions, and the LYRA Sci-Fi Series." />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fonts/fonts.css">
 
-  <!-- FIXED IMPORT MAP: Three.js r181.1 has verified build/three.webgpu.js and build/three.tsl.js -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.181.1/build/three.webgpu.js",
-        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.181.1/build/three.webgpu.js",
-        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.181.1/build/three.tsl.js"
-      }
-    }
-  </script>
+  <script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.181.1/build/three.webgpu.js", "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.181.1/build/three.webgpu.js", "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.181.1/build/three.tsl.js"}}</script>
 
   <style>
     :root {
       --bg-void: #040100;
-      --glass-surface: rgba(12, 5, 2, 0.64);
+      --glass-surface: rgba(10, 4, 1, 0.84);
       --glass-border: rgba(255, 140, 50, 0.22);
       --glass-highlight: rgba(255, 185, 95, 0.6);
       --solar-gold: #ffaa44;
       --solar-amber: #ff6a00;
       --solar-flare: #ff2a00;
       --text-main: #fffaf5;
-      --text-body: rgba(255, 232, 212, 0.82);
-      --text-dim: rgba(255, 200, 160, 0.5);
+      --text-body: rgba(255, 240, 226, 0.94);
+      --text-dim: rgba(255, 232, 214, 0.96);
       --font-display: 'Syne', sans-serif;
       --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -49,17 +37,17 @@
     ::selection { background: rgba(255, 106, 0, 0.5); color: #fff; }
     body { overflow-x: hidden; background-color: var(--bg-void); line-height: 1.65; }
 
-    /* WebGPU Canvas & Atmosphere */
-    #canvas-container { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    #canvas-container, .solar-atmosphere, .telemetry-grid-overlay { position: fixed; inset: 0; pointer-events: none; }
+    #canvas-container { z-index: 0; }
     #canvas-container canvas { width: 100% !important; height: 100% !important; display: block; }
     .solar-atmosphere {
-      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      z-index: 1;
       background:
-        radial-gradient(circle at 50% 42%, rgba(5, 1, 0, 0.08) 0%, rgba(5, 1, 0, 0.72) 88%),
-        linear-gradient(180deg, rgba(4, 1, 0, 0.3) 0%, rgba(4, 1, 0, 0.58) 55%, rgba(4, 1, 0, 0.88) 100%);
+        radial-gradient(circle at 50% 42%, rgba(4, 1, 0, 0) 30%, rgba(4, 1, 0, 0.6) 100%),
+        linear-gradient(180deg, rgba(4, 1, 0, 0.5) 0%, rgba(4, 1, 0, 0.52) 55%, rgba(4, 1, 0, 0.88) 100%);
     }
     .telemetry-grid-overlay {
-      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      z-index: 2;
       background-image:
         linear-gradient(to right, rgba(255, 140, 50, 0.03) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 140, 50, 0.03) 1px, transparent 1px);
@@ -68,10 +56,9 @@
       -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 100%);
     }
 
-    /* HUD Navbar */
+    header.hud-navbar, .transmission-header, .bridge-topbar, .card-meta { display: flex; justify-content: space-between; align-items: center; }
     header.hud-navbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; justify-content: space-between; align-items: center;
       padding: 0.95rem 2.25rem; background: rgba(8, 2, 0, 0.65);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid rgba(255, 140, 50, 0.16);
@@ -92,7 +79,6 @@
     .hud-metric span { color: var(--solar-gold); font-weight: 600; }
     .hud-controls { display: flex; align-items: center; gap: 0.6rem; }
 
-    /* Waypoint Rail */
     aside.chapter-rail {
       position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
       z-index: 90; display: flex; flex-direction: column; gap: 1rem;
@@ -107,41 +93,40 @@
     .chapter-pip { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 160, 80, 0.3); border: 1px solid rgba(255, 160, 80, 0.5); transition: all 0.3s ease; }
     .chapter-dot.active .chapter-pip { width: 11px; height: 11px; background: var(--solar-gold); box-shadow: 0 0 14px var(--solar-amber); }
 
-    /* Bottom-Left Live Luna Transmission Toast */
+    .transmission-hud, .gpu-telemetry-pill { position: fixed; bottom: 16px; z-index: 90; }
     .transmission-hud {
-      position: fixed; bottom: 16px; left: 20px; z-index: 90; max-width: 390px;
+      left: 20px; max-width: 390px;
       background: rgba(10, 4, 1, 0.84); border: 1px solid rgba(255, 145, 55, 0.38);
       border-left: 3px solid var(--solar-gold); border-radius: 12px; padding: 0.75rem 1rem;
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
     }
-    .transmission-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.68rem; color: var(--solar-gold); letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+    .transmission-header { font-family: var(--font-mono); font-size: 0.68rem; color: var(--solar-gold); letter-spacing: 0.08em; margin-bottom: 0.25rem; }
     .transmission-text { font-size: 0.82rem; color: var(--text-body); line-height: 1.45; }
 
-    /* Interactive Buttons */
+    .btn-hud, .btn-solar, .btn-glass { text-decoration: none; display: inline-flex; align-items: center; }
     .btn-hud {
-      background: rgba(255, 95, 0, 0.16); border: 1px solid rgba(255, 150, 60, 0.42); color: var(--text-main);
+      background: rgba(70, 22, 4, 0.72); border: 1px solid rgba(255, 150, 60, 0.42); color: var(--text-main);
       padding: 0.45rem 0.95rem; border-radius: 999px; font-family: var(--font-mono); font-size: 0.76rem;
-      font-weight: 500; cursor: pointer; transition: all 0.22s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;
+      font-weight: 500; cursor: pointer; transition: all 0.22s ease; gap: 0.4rem;
     }
     .btn-hud:hover { background: rgba(255, 115, 25, 0.36); border-color: var(--solar-gold); box-shadow: 0 0 18px rgba(255, 106, 0, 0.45); transform: translateY(-1px); }
 
     .btn-solar {
-      background: linear-gradient(135deg, #ff7b00 0%, #c82200 100%); border: 1px solid rgba(255, 210, 155, 0.7);
+      background: linear-gradient(135deg, #c94000 0%, #8e1800 100%); border: 1px solid rgba(255, 210, 155, 0.7);
       color: #fff; padding: 0.9rem 1.85rem; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 0.55rem;
+      gap: 0.55rem;
       box-shadow: 0 10px 32px rgba(255, 75, 0, 0.48); transition: all 0.25s ease; cursor: pointer;
     }
     .btn-solar:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(255, 115, 25, 0.75); filter: brightness(1.1); }
 
     .btn-glass {
-      background: rgba(18, 7, 2, 0.68); border: 1px solid rgba(255, 160, 75, 0.42); color: var(--text-main);
+      background: rgba(18, 7, 2, 0.82); border: 1px solid rgba(255, 160, 75, 0.42); color: var(--text-main);
       padding: 0.9rem 1.65rem; border-radius: 999px; font-weight: 600; font-size: 0.95rem;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; backdrop-filter: blur(12px); transition: all 0.25s ease;
+      gap: 0.5rem; backdrop-filter: blur(12px); transition: all 0.25s ease;
     }
     .btn-glass:hover { background: rgba(255, 105, 20, 0.24); border-color: var(--solar-gold); transform: translateY(-2px); }
 
-    /* Layout & Story Acts */
     main { position: relative; z-index: 10; max-width: 1220px; margin: 0 auto; padding: 0 2rem; }
     .story-act {
       min-height: 100vh; padding: 7.5rem 0 5rem; display: flex; flex-direction: column; justify-content: center;
@@ -150,7 +135,7 @@
     .story-act.in-view { opacity: 1; transform: translateY(0); }
     .act-pill {
       display: inline-flex; align-items: center; gap: 0.6rem; align-self: flex-start;
-      background: rgba(255, 95, 0, 0.14); border: 1px solid rgba(255, 155, 65, 0.4); padding: 0.38rem 0.95rem;
+      background: rgba(40, 12, 2, 0.72); border: 1px solid rgba(255, 155, 65, 0.4); padding: 0.38rem 0.95rem;
       border-radius: 999px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--solar-gold); margin-bottom: 1.4rem; letter-spacing: 0.08em;
     }
     .hero-display {
@@ -159,16 +144,17 @@
       text-shadow: 0 10px 45px rgba(0, 0, 0, 0.9), 0 0 38px rgba(255, 85, 0, 0.48);
     }
     .solar-gradient-text {
-      background: linear-gradient(95deg, #ffffff 0%, #ffe0b5 38%, #ff7b00 78%, #ff2a00 100%);
+      background: linear-gradient(95deg, #ffffff 0%, #ffe6c2 40%, #ffb35a 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .lead-narrative { font-size: clamp(1.08rem, 1.9vw, 1.35rem); max-width: 740px; color: var(--text-body); margin-bottom: 2.25rem; }
     .lead-narrative strong { color: #fff; font-weight: 600; }
     .cta-row { display: flex; flex-wrap: wrap; gap: 0.95rem; margin-bottom: 3.25rem; }
 
+    .telemetry-strip, .holo-card, .portal-node { background: var(--glass-surface); border: 1px solid var(--glass-border); }
     .telemetry-strip {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.25rem;
-      background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: 20px;
+      border-radius: 20px;
       padding: 1.5rem 2rem; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
     }
     .telemetry-node { display: flex; flex-direction: column; gap: 0.2rem; }
@@ -179,11 +165,10 @@
     .act-title { font-family: var(--font-display); font-size: clamp(2.1rem, 4.2vw, 3.4rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.85rem; }
     .act-subtitle { color: var(--text-body); max-width: 680px; font-size: 1.06rem; }
 
-    /* Bento Matrix */
     .bento-matrix { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
     .holo-card {
       --mouse-x: 50%; --mouse-y: 50%;
-      background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: 22px;
+      border-radius: 22px;
       padding: 2.25rem; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
       transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
@@ -198,9 +183,8 @@
     .span-8 { grid-column: span 8; }
     .span-4 { grid-column: span 4; }
     .span-6 { grid-column: span 6; }
-    .span-12 { grid-column: span 12; }
 
-    .card-meta { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .card-meta { gap: 0.75rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
     .badge-chip {
       font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
       padding: 0.28rem 0.75rem; border-radius: 999px; background: rgba(255, 110, 20, 0.16); border: 1px solid rgba(255, 155, 65, 0.38); color: var(--solar-gold);
@@ -215,13 +199,12 @@
     .tag-item { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.22rem 0.6rem; border-radius: 6px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text-body); }
     .card-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: auto; position: relative; z-index: 2; }
 
-    /* Neural Bridge */
     .neural-bridge {
       background: rgba(8, 3, 1, 0.84); border: 1px solid rgba(255, 145, 55, 0.38); border-radius: 24px;
       overflow: hidden; backdrop-filter: blur(22px); box-shadow: 0 28px 65px rgba(0, 0, 0, 0.8);
     }
     .bridge-topbar {
-      display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.65rem;
+      padding: 1.1rem 1.65rem;
       background: rgba(255, 95, 0, 0.12); border-bottom: 1px solid rgba(255, 145, 55, 0.24); flex-wrap: wrap; gap: 1rem;
     }
     .persona-selector { display: flex; gap: 0.55rem; flex-wrap: wrap; }
@@ -242,12 +225,11 @@
     }
     .prompt-matrix { display: flex; flex-wrap: wrap; gap: 0.55rem; }
 
-    /* Cinema & Constellation Matrix */
     .cinema-frame { position: relative; border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem; border: 1px solid rgba(255, 155, 65, 0.32); aspect-ratio: 16 / 9; background: #080200; }
     .cinema-frame iframe { width: 100%; height: 100%; border: 0; }
     .constellation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.1rem; }
     .portal-node {
-      background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.35rem 1.5rem;
+      border-radius: 18px; padding: 1.35rem 1.5rem;
       text-decoration: none; color: var(--text-main); display: flex; flex-direction: column; gap: 0.35rem; transition: all 0.24s ease; backdrop-filter: blur(16px);
     }
     .portal-node:hover { border-color: var(--solar-gold); transform: translateY(-4px); background: rgba(255, 95, 0, 0.16); box-shadow: 0 14px 32px rgba(0, 0, 0, 0.55); }
@@ -260,7 +242,7 @@
       text-align: center; color: var(--text-dim); font-size: 0.84rem; background: rgba(4, 1, 0, 0.82); backdrop-filter: blur(12px);
     }
     .gpu-telemetry-pill {
-      position: fixed; bottom: 16px; right: 20px; z-index: 90; font-size: 0.72rem; font-family: var(--font-mono);
+      right: 20px; font-size: 0.72rem; font-family: var(--font-mono);
       color: rgba(255, 220, 185, 0.82); background: rgba(8, 3, 0, 0.82); border: 1px solid rgba(255, 135, 45, 0.38);
       padding: 0.45rem 0.8rem; border-radius: 8px; backdrop-filter: blur(10px); pointer-events: none;
     }
@@ -275,12 +257,10 @@
 </head>
 <body>
 
-  <!-- 1. REAL-TIME WEBGPU / TSL VOLUMETRIC SOLAR CANVAS -->
   <div id="canvas-container"></div>
   <div class="solar-atmosphere"></div>
   <div class="telemetry-grid-overlay"></div>
 
-  <!-- 2. OBSERVATORY MISSION HUD -->
   <header class="hud-navbar">
     <a href="#act-1" class="brand-identity">
       <span class="solar-core-pulse"></span>
@@ -300,17 +280,15 @@
     </div>
   </header>
 
-  <!-- WAYPOINT RAIL -->
   <aside class="chapter-rail" aria-label="Story Chapters">
-    <a href="#act-1" class="chapter-dot active" data-act="0"><span class="chapter-label">Act I • High Orbit</span><span class="chapter-pip"></span></a>
-    <a href="#act-2" class="chapter-dot" data-act="1"><span class="chapter-label">Act II • Living AI</span><span class="chapter-pip"></span></a>
-    <a href="#act-3" class="chapter-dot" data-act="2"><span class="chapter-label">Act III • Neural Bridge</span><span class="chapter-pip"></span></a>
-    <a href="#act-4" class="chapter-dot" data-act="3"><span class="chapter-label">Act IV • Cinema &amp; Sound</span><span class="chapter-pip"></span></a>
-    <a href="#act-5" class="chapter-dot" data-act="4"><span class="chapter-label">Act V • Singularity</span><span class="chapter-pip"></span></a>
+    <a href="#act-1" class="chapter-dot active"><span class="chapter-label">Act I • High Orbit</span><span class="chapter-pip"></span></a>
+    <a href="#act-2" class="chapter-dot"><span class="chapter-label">Act II • Living AI</span><span class="chapter-pip"></span></a>
+    <a href="#act-3" class="chapter-dot"><span class="chapter-label">Act III • Neural Bridge</span><span class="chapter-pip"></span></a>
+    <a href="#act-4" class="chapter-dot"><span class="chapter-label">Act IV • Cinema &amp; Sound</span><span class="chapter-pip"></span></a>
+    <a href="#act-5" class="chapter-dot"><span class="chapter-label">Act V • Singularity</span><span class="chapter-pip"></span></a>
   </aside>
 
-  <!-- TRANSMISSION TOAST -->
-  <div class="transmission-hud" id="transmission-box">
+  <div class="transmission-hud">
     <div class="transmission-header">
       <span>🎙️ LUNA 5.0 // TELEMETRY</span>
       <span id="scroll-pct-readout">0% DEPTH</span>
@@ -320,9 +298,7 @@
     </p>
   </div>
 
-  <!-- 3. FIVE-ACT SCROLLYTELLING ODYSSEY -->
   <main>
-    <!-- ACT I: HIGH ORBIT -->
     <section class="story-act in-view" id="act-1" data-act-index="0">
       <div class="act-pill">
         <span>● ACT I // ORBITAL INSERTION</span>
@@ -366,7 +342,6 @@
       </div>
     </section>
 
-    <!-- ACT II: THE CORONA -->
     <section class="story-act" id="act-2" data-act-index="1">
       <div class="act-header">
         <div class="act-pill">ACT II // CORONAL DESCENT — THE ARCHITECTURE</div>
@@ -467,7 +442,6 @@
       </div>
     </section>
 
-    <!-- ACT III: NEURAL BRIDGE -->
     <section class="story-act" id="act-3" data-act-index="2">
       <div class="act-header">
         <div class="act-pill">ACT III // THE NEURAL BRIDGE — INTERACTIVE KERNEL</div>
@@ -518,7 +492,6 @@ capabilities:
       </div>
     </section>
 
-    <!-- ACT IV: SOLAR FLARE -->
     <section class="story-act" id="act-4" data-act-index="3">
       <div class="act-header">
         <div class="act-pill">ACT IV // CORONAL MASS EJECTION — CINEMA &amp; SOUND</div>
@@ -571,7 +544,6 @@ capabilities:
       </div>
     </section>
 
-    <!-- ACT V: THE SINGULARITY -->
     <section class="story-act" id="act-5" data-act-index="4">
       <div class="act-header">
         <div class="act-pill">ACT V // THE SINGULARITY — OPEN TRANSMISSION</div>
@@ -647,19 +619,9 @@ capabilities:
 
   <div class="gpu-telemetry-pill" id="perf-badge">Initializing Helios GPU...</div>
 
-  <!-- ===================================================================== -->
-  <!-- SCROLLYTELLING LOGIC & WEBGPU/TSL VOLUMETRIC ENGINE                   -->
-  <!-- ===================================================================== -->
   <script type="module">
-    import * as THREE from 'three';
-    import {
-      Fn, float, vec2, vec3, vec4,
-      sin, cos, abs, fract, floor, dot, mix, clamp, max, exp, length, normalize, step,
-      Loop, Break, If,
-      screenUV, screenSize, time, uniform
-    } from 'three/tsl';
+    import { startSolar } from './solar.js';
 
-    // 1. Cursor Spotlight on Cards
     document.querySelectorAll('.holo-card').forEach((card) => {
       card.addEventListener('pointermove', (e) => {
         const rect = card.getBoundingClientRect();
@@ -668,7 +630,6 @@ capabilities:
       }, { passive: true });
     });
 
-    // 2. Scrollytelling Telemetry
     const ACT_CONFIG = [
       { name: '01 // HIGH ORBIT', narration: '"Welcome to the Helios Core. Scroll downward to dive into the corona and inspect how Chris builds local, self-evolving AI systems."', uvTarget: 0.0, altitude: '22.0 AU', kelvin: '2,700 K' },
       { name: '02 // THE CORONA', narration: '"We are now inside the magnetic arches. Here, stateless prompts are replaced by SOUL.md—giving Luna 5.0 continuous memory and OS awareness."', uvTarget: 0.12, altitude: '18.5 AU', kelvin: '3,400 K' },
@@ -685,8 +646,15 @@ capabilities:
     const chapterDots = document.querySelectorAll('.chapter-dot');
     const storyActs = document.querySelectorAll('.story-act');
 
-    let targetUV = 0.0;
-    let manualUVOverride = false;
+    const solar = startSolar({
+      container: document.getElementById('canvas-container'),
+      badge: document.getElementById('perf-badge'),
+      uvButton: document.getElementById('toggle-uv'),
+      qualityButton: document.getElementById('toggle-quality'),
+      onProgress: (depth) => {
+        scrollPctReadout.textContent = `${Math.round(depth * 100)}% DEPTH`;
+      }
+    });
 
     const actObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -699,7 +667,7 @@ capabilities:
             hudAltitude.textContent = cfg.altitude;
             hudKelvin.textContent = cfg.kelvin;
             lunaNarration.textContent = cfg.narration;
-            if (!manualUVOverride) targetUV = cfg.uvTarget;
+            solar.setUltraviolet(cfg.uvTarget);
           }
           chapterDots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
         }
@@ -708,7 +676,6 @@ capabilities:
 
     storyActs.forEach((section) => actObserver.observe(section));
 
-    // 3. Interactive Persona Console
     const PERSONAS = {
       luna: {
         status: 'KERNEL: AUTONOMOUS EVOLUTION ONLINE',
@@ -763,7 +730,7 @@ capabilities:
         specDisplay.textContent = data.spec;
         dialogueDisplay.textContent = data.responses.default;
         statusIndicator.textContent = data.status;
-        targetUV = data.uvMode;
+        solar.setUltraviolet(data.uvMode);
       });
     });
 
@@ -772,281 +739,6 @@ capabilities:
         dialogueDisplay.textContent = PERSONAS[currentPersona].responses[btn.dataset.prompt];
       });
     });
-
-    // 4. WebGPU / WebGL2 Volumetric Solar Engine
-    const container = document.getElementById('canvas-container');
-    const perfBadge = document.getElementById('perf-badge');
-
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const renderer = new THREE.WebGPURenderer({ antialias: false, powerPreference: 'high-performance' });
-
-    let currentScale = isMobile ? 0.7 : Math.min(window.devicePixelRatio, 1.2);
-    let adaptiveScaling = true;
-
-    function updateRendererSize() {
-      renderer.setPixelRatio(currentScale);
-      renderer.setSize(window.innerWidth, window.innerHeight, false);
-    }
-    updateRendererSize();
-    container.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-    const uMouse = uniform(new THREE.Vector2(0, 0));
-    const uScroll = uniform(0.0);
-    const uUltraviolet = uniform(0.0);
-    const uTimeScale = uniform(prefersReducedMotion ? 0.15 : 1.0);
-
-    const rand = (co) => fract(sin(dot(co, vec2(1.5977, 9.6226))).mul(43758.5453));
-
-    const pn = Fn(([p_in]) => {
-      const p = vec3(p_in).toVar();
-      const i = floor(p).toVar();
-      const f = fract(p).toVar();
-      f.assign(f.mul(f).mul(float(3.0).sub(f.mul(2.0))));
-
-      const n = i.x.add(i.y.mul(57.0)).add(i.z.mul(113.0));
-      const h0 = fract(sin(vec4(n).add(vec4(0.0, 1.0, 57.0, 58.0))).mul(43758.5453));
-      const h1 = fract(sin(vec4(n).add(vec4(113.0, 114.0, 170.0, 171.0))).mul(43758.5453));
-
-      const hz = mix(h0, h1, f.z);
-      const hy = mix(hz.xy, hz.zw, f.y);
-      return mix(hy.x, hy.y, f.x);
-    });
-
-    const fpn = Fn(([p_in]) => {
-      const p = vec3(p_in);
-      return pn(p.mul(0.06125)).mul(0.57).add(pn(p.mul(0.125)).mul(0.28)).add(pn(p.mul(0.25)).mul(0.15));
-    });
-
-    const cosNoise = (p) => float(0.5).mul(sin(p.x).add(sin(p.y)));
-    const rot2D = (p, a) => {
-      const c = cos(a);
-      const s = sin(a);
-      return c.mul(p).add(s.mul(vec2(p.y, p.x.negate())));
-    };
-    const sdTorus = (p, t) => {
-      const q = vec2(length(p.xz).sub(t.x.mul(1.2)), p.y);
-      return length(q).sub(t.y);
-    };
-    const smin = (a, b, k) => {
-      const h = clamp(float(0.5).add(float(0.5).mul(b.sub(a)).div(k)), 0.0, 1.0);
-      return mix(b, a, h).sub(k.mul(h).mul(float(1.0).sub(h)));
-    };
-
-    const sunSurface = Fn(([pos_in, animTime]) => {
-      const pos = vec3(pos_in);
-      const h = float(0.0).toVar();
-      const q = pos.xz.mul(0.5).toVar();
-      const s = float(0.5).toVar();
-
-      Loop(5, () => {
-        h.addAssign(s.mul(cosNoise(q)));
-        q.assign(vec2(
-          q.x.mul(1.36).add(q.y.mul(1.02)).add(2.41),
-          q.x.mul(-1.02).add(q.y.mul(1.36)).add(8.13)
-        ));
-        s.mulAssign(float(0.48).add(float(0.2).mul(h)));
-      });
-
-      h.mulAssign(2.05);
-      const d1 = pos.y.sub(h);
-
-      const rawMod = pos.add(3.3).mul(0.1);
-      const r1 = rawMod.sub(floor(rawMod)).mul(10.0).sub(5.0).toVar();
-      r1.y.assign(pos.y.sub(0.1).sub(h.mul(0.7)).add(float(0.5).mul(sin(animTime.mul(3.0).add(pos.x).add(pos.z.mul(3.0))))));
-
-      const c = cos(pos.x);
-      const rxz = c.mul(r1.xz).add(vec2(r1.z, r1.x.negate()));
-      r1.x.assign(rxz.x);
-      r1.z.assign(rxz.y);
-
-      const ratio = clamp(abs(pos.x.div(pos.z.add(0.0001))), 0.7, 2.5);
-      const d2 = sdTorus(vec3(r1.x, r1.z, r1.y), vec2(ratio, 0.20));
-
-      return smin(d1, d2, float(1.0));
-    });
-
-    const map = Fn(([p_in, animTime]) => {
-      const p = vec3(p_in).toVar();
-      p.z.addAssign(1.0);
-
-      const pitchAngle = float(-25.5).add(uMouse.y.mul(0.28)).add(sin(uScroll.mul(3.14159)).mul(0.55));
-      const ryz = rot2D(vec2(p.y, p.z), pitchAngle);
-      p.y.assign(ryz.x);
-      p.z.assign(ryz.y);
-
-      const yawAngle = uMouse.x.mul(1.15).add(animTime.mul(0.09)).add(uScroll.mul(2.4));
-      const rxz = rot2D(vec2(p.x, p.z), yawAngle);
-      p.x.assign(rxz.x);
-      p.z.assign(rxz.y);
-
-      const dBase = sunSurface(p, animTime).toVar();
-      If(dBase.lessThan(0.65), () => {
-        dBase.addAssign(fpn(p.mul(50.0).add(animTime.mul(25.0))).mul(0.45));
-      });
-
-      return dBase;
-    });
-
-    const firePalette = (i) => {
-      const T = float(1400.0).add(float(1300.0).mul(i));
-      const L5 = vec3(22190.066, 5507.317, 1649.162);
-      const L = vec3(7.4, 5.6, 4.4);
-      const denom = L5.mul(exp(float(143876.72).div(L.mul(T))).sub(1.0));
-      return vec3(1.0).sub(exp(vec3(-5e8).div(denom)));
-    };
-
-    const solarFuryShader = Fn(() => {
-      const animTime = time.mul(uTimeScale);
-      const uv = vec2(screenUV.x, float(1.0).sub(screenUV.y));
-      const aspect = screenSize.x.div(screenSize.y);
-      const centered = vec2(uv.x.sub(0.5).mul(aspect), uv.y.sub(0.5));
-
-      const rd = normalize(vec3(centered.x, centered.y, 1.0));
-      const diveDepth = sin(uScroll.mul(3.14159)).mul(5.2);
-      const ro = vec3(0.0, 0.0, float(-22.0).add(diveDepth));
-
-      const ld = float(0.0).toVar();
-      const td = float(0.0).toVar();
-      const w  = float(0.0).toVar();
-      const d  = float(1.0).toVar();
-      const t  = float(1.0).toVar();
-
-      const h = float(0.1);
-      const tc = float(0.0).toVar();
-      const seed = uv.add(fract(animTime));
-
-      Loop(44, ({ i }) => {
-        If(
-          td.greaterThan(0.985)
-            .or(d.lessThan(t.mul(0.0012)))
-            .or(t.greaterThan(38.0)),
-          () => { Break(); }
-        );
-
-        d.assign(map(ro.add(rd.mul(t)), animTime));
-        ld.assign(h.sub(d).mul(step(d, h)));
-        w.assign(float(1.0).sub(td).mul(ld));
-
-        tc.addAssign(w.mul(w).add(1.0 / 42.0));
-        td.addAssign(w.add(1.0 / 165.0));
-
-        const iFloat = float(i).add(1.0);
-        const jitter = rand(seed.mul(iFloat)).mul(0.28);
-        const baseFactor = mix(float(0.8), float(1.0), uUltraviolet);
-
-        d.assign(abs(d).mul(baseFactor.add(jitter)));
-        d.assign(max(d, 0.048));
-        t.addAssign(d.mul(0.52));
-      });
-
-      const finalColor = firePalette(tc).toVar();
-      const uvBoost = float(1.0).div(exp(ld.mul(2.82))).mul(1.05);
-      finalColor.assign(mix(finalColor, finalColor.mul(uvBoost), uUltraviolet));
-
-      return vec4(finalColor, 1.0);
-    });
-
-    const material = new THREE.MeshBasicNodeMaterial();
-    material.colorNode = solarFuryShader();
-
-    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-    scene.add(quad);
-
-    // 5. Scroll Telemetry & Animation Loop
-    const targetMouse = new THREE.Vector2(0, 0);
-    let targetScroll = 0;
-
-    window.addEventListener('pointermove', (e) => {
-      targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    }, { passive: true });
-
-    window.addEventListener('scroll', () => {
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      targetScroll = Math.min(1.0, Math.max(0.0, window.scrollY / maxScroll));
-      if (scrollPctReadout) {
-        scrollPctReadout.textContent = `${Math.round(targetScroll * 100)}% DEPTH`;
-      }
-    }, { passive: true });
-
-    const uvBtn = document.getElementById('toggle-uv');
-    let isUVManual = false;
-    uvBtn.addEventListener('click', () => {
-      isUVManual = !isUVManual;
-      manualUVOverride = isUVManual;
-      targetUV = isUVManual ? 1.0 : 0.0;
-      uvBtn.textContent = isUVManual ? '🟣 Spectrum: Ultraviolet' : '☀️ Spectrum: Blackbody';
-    });
-
-    const qualityBtn = document.getElementById('toggle-quality');
-    qualityBtn.addEventListener('click', () => {
-      adaptiveScaling = !adaptiveScaling;
-      if (!adaptiveScaling) {
-        currentScale = Math.min(window.devicePixelRatio, 1.4);
-        qualityBtn.textContent = '🔒 Quality: High';
-      } else {
-        qualityBtn.textContent = '⚡ Auto-Scale';
-      }
-      updateRendererSize();
-    });
-
-    window.addEventListener('resize', updateRendererSize, { passive: true });
-
-    let isTabVisible = true;
-    document.addEventListener('visibilitychange', () => {
-      isTabVisible = !document.hidden;
-    });
-
-    let frameCount = 0;
-    let lastCheck = performance.now();
-
-    async function init() {
-      try {
-        await renderer.init();
-        const backendName = renderer.backend?.isWebGPUBackend ? 'WebGPU' : 'WebGL2';
-
-        renderer.setAnimationLoop((now) => {
-          if (!isTabVisible) return;
-
-          frameCount++;
-          const elapsed = now - lastCheck;
-
-          if (elapsed >= 500) {
-            const fps = Math.round((frameCount * 1000) / elapsed);
-
-            if (adaptiveScaling) {
-              if (fps < 48 && currentScale > 0.5) {
-                currentScale = Math.max(0.5, +(currentScale - 0.08).toFixed(2));
-                updateRendererSize();
-              } else if (fps > 58 && currentScale < (isMobile ? 0.95 : 1.25)) {
-                currentScale = Math.min(isMobile ? 0.95 : 1.25, +(currentScale + 0.04).toFixed(2));
-                updateRendererSize();
-              }
-            }
-
-            perfBadge.textContent = `${backendName} • ${fps} FPS • ${Math.round(currentScale * 100)}% Res`;
-            frameCount = 0;
-            lastCheck = now;
-          }
-
-          uMouse.value.lerp(targetMouse, 0.05);
-          uScroll.value += (targetScroll - uScroll.value) * 0.06;
-          uUltraviolet.value += (targetUV - uUltraviolet.value) * 0.05;
-
-          renderer.render(scene, camera);
-        });
-      } catch (err) {
-        console.error('Helios GPU initialization error:', err);
-        perfBadge.textContent = `Shader Fallback Active`;
-      }
-    }
-
-    init();
   </script>
 </body>
 </html>
