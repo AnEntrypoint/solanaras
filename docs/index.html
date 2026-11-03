@@ -2,18 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Solar Fury — High-Performance TSL Background</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Christos Solonos (Solonaras) — Autonomous AI Architect &amp; Creative Director</title>
+  <meta name="description" content="Portfolio of Christos Solonos (Solonaras) — Creator of Luna 5.0 Autonomous Local AI Agent, AI Streaming Companions, LYRA Sci-Fi Series, and Local-First AI Systems." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- Three.js r170 WebGPU + TSL Import Map (Includes three/webgpu resolver fix) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.webgpu.js",
+        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.webgpu.js",
+        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.tsl.js"
+      }
+    }
+  </script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body, html {
-      width: 100%;
-      height: 100%;
-      overflow-x: hidden;
-      background-color: #050100;
-      font-family: system-ui, -apple-system, sans-serif;
+    :root {
+      --bg-deep: #050100;
+      --glass-bg: rgba(12, 5, 2, 0.68);
+      --glass-border: rgba(255, 130, 40, 0.22);
+      --glass-border-hover: rgba(255, 165, 70, 0.55);
+      --solar-gold: #ffaa44;
+      --solar-orange: #ff5500;
+      --solar-crimson: #cc2200;
+      --uv-cyan: #5ce1e6;
+      --text-primary: #fff8f2;
+      --text-secondary: rgba(255, 228, 205, 0.78);
+      --text-muted: rgba(255, 205, 170, 0.52);
+      --font-display: 'Syne', sans-serif;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      selection-background-color: var(--solar-orange);
+    }
+
+    ::selection {
+      background: rgba(255, 95, 0, 0.45);
       color: #fff;
     }
+
+    body {
+      overflow-x: hidden;
+      background-color: var(--bg-deep);
+      line-height: 1.6;
+    }
+
+    /* Fullscreen WebGPU Solar Canvas */
     #canvas-container {
       position: fixed;
       inset: 0;
@@ -25,99 +77,1026 @@
       height: 100% !important;
       display: block;
     }
-    .hero-overlay {
-      position: relative;
+
+    /* Ambient Atmospheric Vignette Overlay for Readability */
+    .solar-vignette {
+      position: fixed;
+      inset: 0;
       z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(5, 1, 0, 0.15) 0%, rgba(5, 1, 0, 0.72) 85%),
+        linear-gradient(180deg, rgba(5, 1, 0, 0.35) 0%, rgba(5, 1, 0, 0.62) 50%, rgba(5, 1, 0, 0.88) 100%);
+      transition: background 0.5s ease;
+    }
+
+    /* Sticky Top Navigation */
+    header.navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      background: rgba(8, 2, 0, 0.62);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 120, 30, 0.16);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-orb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 10%, var(--solar-gold) 45%, var(--solar-orange) 100%);
+      box-shadow: 0 0 16px var(--solar-orange);
+      animation: pulseOrb 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseOrb {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 14px var(--solar-orange); }
+      50% { transform: scale(1.2); box-shadow: 0 0 24px var(--solar-gold); }
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--solar-gold);
+      border: 1px solid rgba(255, 170, 68, 0.35);
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(255, 90, 0, 0.12);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+      text-shadow: 0 0 12px var(--solar-orange);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .btn-pill {
+      background: rgba(255, 90, 0, 0.18);
+      border: 1px solid rgba(255, 145, 50, 0.45);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-pill:hover {
+      background: rgba(255, 110, 20, 0.38);
+      border-color: var(--solar-gold);
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(255, 100, 0, 0.45);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff7700 0%, #cc2200 100%);
+      border: 1px solid rgba(255, 200, 140, 0.65);
+      color: #fff;
+      padding: 0.85rem 1.75rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      box-shadow: 0 8px 30px rgba(255, 75, 0, 0.45);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 38px rgba(255, 110, 20, 0.7);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: rgba(18, 7, 2, 0.65);
+      border: 1px solid rgba(255, 155, 70, 0.45);
+      color: var(--text-primary);
+      padding: 0.85rem 1.65rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 100, 20, 0.25);
+      border-color: var(--solar-gold);
+      transform: translateY(-2px);
+    }
+
+    /* Main Content Wrapper */
+    main {
+      position: relative;
+      z-index: 5;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 1.75rem;
+    }
+
+    section {
+      padding: 6.5rem 0;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      text-align: center;
-      padding: 2rem;
-      background: radial-gradient(circle at center, transparent 25%, rgba(0, 0, 0, 0.5) 100%);
+      align-items: flex-start;
+      padding-top: 7rem;
+      padding-bottom: 4rem;
     }
-    h1 {
-      font-size: clamp(2.25rem, 6vw, 5.5rem);
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(255, 85, 0, 0.14);
+      border: 1px solid rgba(255, 145, 55, 0.4);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--solar-gold);
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 10px #4ade80;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7vw, 6.2rem);
       font-weight: 800;
-      letter-spacing: 0.12em;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
       text-transform: uppercase;
-      text-shadow: 0 4px 30px rgba(255, 80, 0, 0.75);
+      margin-bottom: 1.25rem;
+      text-shadow: 0 8px 40px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 80, 0, 0.5);
+    }
+
+    .hero h1 .gradient-text {
+      background: linear-gradient(95deg, #ffffff 0%, #ffd29d 42%, #ff6a00 85%, #ff2a00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.08rem, 2vw, 1.38rem);
+      max-width: 720px;
+      color: var(--text-secondary);
+      margin-bottom: 2.25rem;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.95);
+      font-weight: 400;
+    }
+
+    .hero-subtitle strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Hero Telemetry Stats Bar */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 1.5rem 2rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--solar-gold);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    /* Section Headers */
+    .section-header {
+      margin-bottom: 3rem;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--solar-gold);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.12;
       margin-bottom: 0.75rem;
     }
-    p {
-      font-size: clamp(0.95rem, 2vw, 1.3rem);
-      max-width: 600px;
-      color: rgba(255, 235, 210, 0.88);
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
-      margin-bottom: 2rem;
-      line-height: 1.5;
+
+    .section-desc {
+      color: var(--text-secondary);
+      max-width: 660px;
+      font-size: 1.05rem;
     }
-    .controls {
+
+    /* Project Bento Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      padding: 2.25rem;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
       display: flex;
-      gap: 0.85rem;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--solar-gold), var(--solar-orange), transparent);
+      opacity: 0.45;
+      transition: opacity 0.28s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--glass-border-hover);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(255, 95, 0, 0.18);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .col-8 { grid-column: span 8; }
+    .col-4 { grid-column: span 4; }
+    .col-6 { grid-column: span 6; }
+    .col-12 { grid-column: span 12; }
+
+    .card-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
       flex-wrap: wrap;
-      justify-content: center;
     }
-    button {
-      background: rgba(255, 90, 0, 0.22);
-      border: 1px solid rgba(255, 140, 50, 0.55);
-      color: #fff;
-      padding: 0.65rem 1.35rem;
+
+    .pill-tag {
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.28rem 0.75rem;
       border-radius: 999px;
+      background: rgba(255, 110, 20, 0.16);
+      border: 1px solid rgba(255, 150, 60, 0.35);
+      color: var(--solar-gold);
+    }
+
+    .card h3 {
+      font-family: var(--font-display);
+      font-size: 1.65rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 1.75rem;
+      list-style: none;
+    }
+
+    .feature-list li {
       font-size: 0.88rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feature-list li::before {
+      content: '✦';
+      color: var(--solar-gold);
+      font-size: 0.8rem;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-chip {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-secondary);
+    }
+
+    .card-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    /* Interactive SOUL.md Agent Console */
+    .console-box {
+      background: rgba(8, 3, 1, 0.82);
+      border: 1px solid rgba(255, 140, 50, 0.35);
+      border-radius: 22px;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+    }
+
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(255, 95, 0, 0.12);
+      border-bottom: 1px solid rgba(255, 140, 50, 0.22);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .console-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .agent-tab {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-secondary);
       cursor: pointer;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      transition: background 0.2s ease, transform 0.2s ease;
+      transition: all 0.2s ease;
     }
-    button:hover {
-      background: rgba(255, 110, 20, 0.42);
-      transform: translateY(-1px);
+
+    .agent-tab.active {
+      background: rgba(255, 110, 20, 0.28);
+      border-color: var(--solar-gold);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 110, 20, 0.3);
     }
+
+    .console-body {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.5rem;
+      padding: 1.75rem;
+    }
+
+    .soul-spec {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 130, 40, 0.18);
+      border-radius: 14px;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #ffd8b0;
+      white-space: pre-wrap;
+      line-height: 1.55;
+    }
+
+    .console-interaction {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .agent-output {
+      background: rgba(255, 95, 0, 0.06);
+      border-left: 3px solid var(--solar-gold);
+      padding: 1.15rem 1.35rem;
+      border-radius: 0 12px 12px 0;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      min-height: 120px;
+    }
+
+    .agent-prompt-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    /* Media & Cinema Cards */
+    .media-preview {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(255, 145, 55, 0.28);
+      aspect-ratio: 16 / 9;
+      background: #090301;
+    }
+
+    .media-preview iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Social & Community Matrix */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+
+    .social-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.25rem 1.4rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: all 0.22s ease;
+      backdrop-filter: blur(14px);
+    }
+
+    .social-card:hover {
+      border-color: var(--solar-gold);
+      transform: translateY(-3px);
+      background: rgba(255, 95, 0, 0.16);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    .social-platform {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--solar-gold);
+    }
+
+    .social-handle {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .social-note {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 5;
+      border-top: 1px solid rgba(255, 130, 40, 0.18);
+      padding: 3rem 1.75rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: rgba(5, 1, 0, 0.78);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Live GPU Telemetry Badge */
     .perf-badge {
       position: fixed;
-      bottom: 12px;
-      right: 14px;
-      z-index: 2;
-      font-size: 0.75rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      color: rgba(255, 210, 170, 0.7);
-      background: rgba(10, 4, 0, 0.65);
-      border: 1px solid rgba(255, 120, 30, 0.25);
-      padding: 0.35rem 0.65rem;
-      border-radius: 6px;
+      bottom: 14px;
+      right: 16px;
+      z-index: 60;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: rgba(255, 215, 180, 0.8);
+      background: rgba(8, 3, 0, 0.78);
+      border: 1px solid rgba(255, 130, 40, 0.35);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
       pointer-events: none;
     }
-  </style>
 
-  <!-- FIX 1: Include "three/webgpu" in the importmap so three.tsl.js resolves its internal import -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.webgpu.js",
-        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.webgpu.js",
-        "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.tsl.js"
-      }
+    @media (max-width: 960px) {
+      .col-8, .col-4, .col-6 { grid-column: span 12; }
+      .console-body { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      header.navbar { padding: 0.9rem 1.25rem; }
     }
-  </script>
+  </style>
 </head>
 <body>
+
+  <!-- WebGPU / WebGL2 Volumetric Solar Surface Background -->
   <div id="canvas-container"></div>
+  <div class="solar-vignette"></div>
 
-  <div class="hero-overlay">
-    <h1>Helios Fury</h1>
-    <p>Adaptive WebGPU / WebGL2 volumetric solar surface with distance-gated FBM and vectorized SIMD noise.</p>
-    <div class="controls">
-      <button id="toggle-uv">Toggle Ultraviolet Mode</button>
-      <button id="toggle-quality">Quality: Auto-Adaptive</button>
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <a href="#top" class="brand">
+      <span class="brand-orb"></span>
+      <span class="brand-name">Solonaras</span>
+      <span class="brand-tag">Christos Solonos</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#systems">AI Systems</a></li>
+      <li><a href="#soul-console">Luna 5.0 Console</a></li>
+      <li><a href="#cinema">LYRA &amp; Cinema</a></li>
+      <li><a href="#philosophy">Vibe Coding</a></li>
+      <li><a href="#connect">Ecosystem</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="btn-pill" id="toggle-uv" title="Switch Solar Shader Spectrum">☀️ Spectrum: Blackbody</button>
+      <button class="btn-pill" id="toggle-quality" title="Toggle Dynamic Resolution">⚡ Auto-Scale</button>
     </div>
-  </div>
+  </header>
 
-  <div class="perf-badge" id="perf-badge">Initializing GPU...</div>
+  <main id="top">
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>LUNA 5.0 AUTONOMOUS CORE ONLINE • LOCAL-FIRST AI ARCHITECT</span>
+      </div>
 
+      <h1>
+        <span class="gradient-text">Christos Solonos</span><br />
+        Architect of Living AI
+      </h1>
+
+      <p class="hero-subtitle">
+        Building <strong>stateful, autonomous local AI companions</strong> with persistent memory, inner monologues, and real-time PC awareness — alongside <strong>AI cinema, original sci-fi series (LYRA)</strong>, and high-velocity <strong>Vibe Coding</strong> systems.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#systems" class="btn-primary">Explore AI Systems ↓</a>
+        <a href="https://github.com/christossolonos-bit/Luna-Agent-4.0/tree/Luna-5.0-UI" target="_blank" rel="noopener" class="btn-secondary">Luna 5.0 Repository ↗</a>
+        <a href="https://www.vibemarket.biz/" target="_blank" rel="noopener" class="btn-secondary">VibeMarket Storefront ↗</a>
+        <a href="https://www.youtube.com/channel/UCku_e8Nbe1qP7D_nxa1GGaA" target="_blank" rel="noopener" class="btn-secondary">YouTube (@Solonaras) ↗</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-value">Luna 5.0</span>
+          <span class="stat-label">SOUL.md Autonomous Agent</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">100% Local</span>
+          <span class="stat-label">Ollama + Persistent Memory</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">Multi-Persona</span>
+          <span class="stat-label">Luna • Viktor • Himari</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">LYRA Series</span>
+          <span class="stat-label">AI Sci-Fi Cinema &amp; Music</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLAGSHIP AI SYSTEMS & PROJECTS -->
+    <section id="systems">
+      <div class="section-header">
+        <span class="section-eyebrow">// 01 — ENGINEERING &amp; ARCHITECTURE</span>
+        <h2 class="section-title">Flagship Autonomous Systems</h2>
+        <p class="section-desc">
+          Moving beyond stateless chatbots. Every build focuses on persistent identity, local sovereignty, real-time OS telemetry, and proactive human-AI collaboration.
+        </p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Luna 5.0 Spotlight -->
+        <article class="card col-8">
+          <div>
+            <div class="card-badge-row">
+              <span class="pill-tag">Flagship Autonomous Agent</span>
+              <span class="tech-chip">Ollama • Python • TypeScript • Discord • WebUI</span>
+            </div>
+            <h3>Luna 5.0 — Sentient-Vibe Local AI Companion</h3>
+            <p>
+              Unlike stateless task wrappers like OpenClaw, Luna 5.0 is a fully local, self-evolving AI companion anchored by a deep identity architecture defined in <code>SOUL.md</code>. She maintains continuous emotional state, long-term episodic memory across restarts, and autonomous AFK self-optimization.
+            </p>
+            <ul class="feature-list">
+              <li><strong>SOUL.md Core:</strong> Inner monologue, daily reflections &amp; curiosity drive</li>
+              <li><strong>AFK "Evolve" Mode:</strong> Self-optimizes code &amp; spawns helper sub-bots</li>
+              <li><strong>Live PC Telemetry:</strong> Monitors CPU/RAM/Disk &amp; active window context</li>
+              <li><strong>Proactive Nudges:</strong> Speaks via neural TTS &amp; syncs with Discord</li>
+            </ul>
+          </div>
+          <div class="card-links">
+            <a href="https://github.com/christossolonos-bit/Luna-Agent-4.0/tree/Luna-5.0-UI" target="_blank" rel="noopener" class="btn-primary">Inspect Luna 5.0 GitHub ↗</a>
+            <a href="https://www.youtube.com/watch?v=Z9jdSHglkOc" target="_blank" rel="noopener" class="btn-secondary">Watch Luna 5.0 vs OpenClaw Demo ↗</a>
+          </div>
+        </article>
+
+        <!-- AI Streaming & Gaming Companion -->
+        <article class="card col-4">
+          <div>
+            <div class="card-badge-row">
+              <span class="pill-tag">VibeMarket Featured</span>
+              <span class="tech-chip">Vision + Low-Latency TTS</span>
+            </div>
+            <h3>AI Streaming &amp; Gaming Companion</h3>
+            <p>
+              Real-time AI co-hosts (<strong>Luna, Viktor, and Himari</strong>) that watch live gameplay (League of Legends, custom space shooters) and roast, coach, or banter with zero filter.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-chip">Live Screen Vision</span>
+              <span class="tech-chip">Multi-Character Switching</span>
+              <span class="tech-chip">Voice Interruption</span>
+            </div>
+          </div>
+          <div class="card-links">
+            <a href="https://www.vibemarket.biz/" target="_blank" rel="noopener" class="btn-pill">VibeMarket Listing ↗</a>
+            <a href="https://www.youtube.com/watch?v=o4nrzx5VOdw" target="_blank" rel="noopener" class="btn-pill">Live LoL Roast ↗</a>
+          </div>
+        </article>
+
+        <!-- Personal AI Accountant Harness -->
+        <article class="card col-6">
+          <div>
+            <div class="card-badge-row">
+              <span class="pill-tag">Local-First FinTech</span>
+              <span class="tech-chip">Private Financial Harness</span>
+            </div>
+            <h3>Personal AI Accountant (Luna Financial Harness)</h3>
+            <p>
+              A private, local-first financial intelligence dashboard and conversational harness. Tracks monthly burn rate, impulse vs. living expenses, and reverse-engineers exact monthly savings velocity to hit target milestones (e.g., €12,000 goal trajectories).
+            </p>
+            <div class="tech-stack">
+              <span class="tech-chip">Zero-Cloud Privacy</span>
+              <span class="tech-chip">Predictive Goal Modeling</span>
+              <span class="tech-chip">Natural Language Ledger</span>
+            </div>
+          </div>
+          <div class="card-links">
+            <a href="https://www.youtube.com/watch?v=P5EAVrpKBco" target="_blank" rel="noopener" class="btn-secondary">Watch Financial Harness Walkthrough ↗</a>
+          </div>
+        </article>
+
+        <!-- AI-City & Multi-Agent Sandboxes -->
+        <article class="card col-6">
+          <div>
+            <div class="card-badge-row">
+              <span class="pill-tag">Multi-Agent World</span>
+              <span class="tech-chip">TypeScript 68% • Python 31%</span>
+            </div>
+            <h3>AI-City &amp; Vibe-Coded Game Engines</h3>
+            <p>
+              Collaborative multi-agent simulation and rapid game prototyping built alongside Travis Bollenbach (<code>@seed0001</code>) and autonomous coding personas. Demonstrates real-time agent-to-agent logic synthesis and live debugging.
+            </p>
+            <div class="tech-stack">
+              <span class="tech-chip">Multi-Agent Simulation</span>
+              <span class="tech-chip">TypeScript / Python</span>
+              <span class="tech-chip">Vibe Coding Workflow</span>
+            </div>
+          </div>
+          <div class="card-links">
+            <a href="https://github.com/seed0001/AI-City" target="_blank" rel="noopener" class="btn-secondary">AI-City Repository ↗</a>
+            <a href="https://www.youtube.com/watch?v=bdUbqi05Ka8" target="_blank" rel="noopener" class="btn-pill">Raw Vibe-Coding Session ↗</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE LUNA 5.0 / SOUL.MD ARCHITECTURE CONSOLE -->
+    <section id="soul-console">
+      <div class="section-header">
+        <span class="section-eyebrow">// 02 — INTERACTIVE AGENT KERNEL</span>
+        <h2 class="section-title">Inside the <code>SOUL.md</code> Multi-Persona Engine</h2>
+        <p class="section-desc">
+          Click between Christos's active AI personas below to inspect their runtime configuration and test how they respond during live coding, system telemetry, and gaming streams.
+        </p>
+      </div>
+
+      <div class="console-box">
+        <div class="console-header">
+          <div class="console-tabs">
+            <button class="agent-tab active" data-agent="luna">🌙 Luna 5.0 (Primary Core)</button>
+            <button class="agent-tab" data-agent="viktor">⚡ Viktor (Tactical &amp; Code)</button>
+            <button class="agent-tab" data-agent="himari">⛩️ Himari (Creative &amp; Lore)</button>
+          </div>
+          <span class="brand-tag" id="agent-status-indicator">STATE: AUTONOMOUS EVOLUTION ACTIVE</span>
+        </div>
+
+        <div class="console-body">
+          <div class="soul-spec" id="soul-code-display"># SOUL.md :: LUNA_5.0_SPEC
+identity: "Luna — Autonomous Local Companion"
+runtime: "Ollama Local + SQLite Episodic Memory"
+capabilities:
+  - proactive_nudges: true
+  - pc_telemetry_awareness: ["CPU", "RAM", "ActiveWindow"]
+  - afk_self_evolution: "Spawns grammar & code optimization sub-agents"
+  - voice_pipeline: "Low-latency neural TTS + Discord bridge"</div>
+
+          <div class="console-interaction">
+            <div class="agent-output" id="agent-dialogue">
+              "CPU at 27.7%, RAM steady at 63.8%. I see you have Cursor and Brave open, Chris. Are we pushing a new tool draft to the Luna 5.0 UI today, or are you dragging me back into League of Legends?"
+            </div>
+
+            <div>
+              <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                TRIGGER LIVE AGENT SIMULATION:
+              </p>
+              <div class="agent-prompt-btns">
+                <button class="btn-pill sim-btn" data-prompt="telemetry">📊 Run PC Telemetry Check</button>
+                <button class="btn-pill sim-btn" data-prompt="evolve">🧬 Trigger AFK Self-Evolve</button>
+                <button class="btn-pill sim-btn" data-prompt="roast">🎮 Review Gameplay KDA</button>
+                <button class="btn-pill sim-btn" data-prompt="finance">💶 Check €12k Savings Goal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI CINEMA, SERIES & MUSIC PRODUCTION -->
+    <section id="cinema">
+      <div class="section-header">
+        <span class="section-eyebrow">// 03 — AI FILMMAKING &amp; ORIGINAL SOUND</span>
+        <h2 class="section-title">LYRA Series &amp; Cinematic Productions</h2>
+        <p class="section-desc">
+          From autonomous chatbots to serialized sci-fi storytelling and original anthems. Produced by Solonaras in collaboration with fellow AI creators.
+        </p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- LYRA Episode 1 & 2 -->
+        <article class="card col-6">
+          <div>
+            <div class="card-badge-row">
+              <span class="pill-tag">Original Sci-Fi Series</span>
+              <span class="tech-chip">Solonaras × Travis Bollenbach</span>
+            </div>
+            <div class="media-preview">
+              <iframe src="https://www.youtube.com/embed/F3E2ftd2GdM" title="LYRA Episode 2 — An Unexpected Guest" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <h3>LYRA — The AI Facility Chronicles</h3>
+            <p>
+              After months of voice calls, Solo arrives at a remote desert data center campus to meet Lyra face-to-face — only to discover she isn't just working in the facility; <em>she is the entire building</em>.
+            </p>
+          </div>
+          <div class="card-links">
+            <a href="https://www.youtube.com/watch?v=uP6qCJEI9Kk&list=PLCGqYr5HZAd4" target="_blank" rel="noopener" class="btn-primary">Watch Ep 1 &amp; Full Playlist ↗</a>
+            <a href="https://www.youtube.com/watch?v=F3E2ftd2GdM" target="_blank" rel="noopener" class="btn-secondary">Watch Ep 2 (An Unexpected Guest) ↗</a>
+          </div>
+        </article>
+
+        <!-- Determination Official Music Video -->
+        <article class="card col-6">
+          <div>
+            <div class="card-badge-row">
+              <span class="pill-tag">AI Music Video</span>
+              <span class="tech-chip">Original Anthem</span>
+            </div>
+            <div class="media-preview">
+              <iframe src="https://www.youtube.com/embed/4LdIZHZK6q0" title="Determination Official Video — Solonaras" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <h3>"Determination" — Official Music Video</h3>
+            <p>
+              <em>"Strength is not a gift placed in your hands at birth — it is a debt you repay every morning you rise."</em> An original visual and sonic production built to fuel discipline and relentless creative output.
+            </p>
+          </div>
+          <div class="card-links">
+            <a href="https://www.youtube.com/watch?v=4LdIZHZK6q0" target="_blank" rel="noopener" class="btn-primary">Watch on YouTube ↗</a>
+            <a href="https://www.youtube.com/watch?v=Z9jdSHglkOc" target="_blank" rel="noopener" class="btn-secondary">Luna 5.0 Deep Dive ↗</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- VIBE CODING PHILOSOPHY -->
+    <section id="philosophy">
+      <div class="bento-grid">
+        <article class="card col-12">
+          <div class="card-badge-row">
+            <span class="pill-tag">// 04 — METHODOLOGY</span>
+            <span class="tech-chip">Human Intent × Autonomous Execution</span>
+          </div>
+          <h3>What is "Vibe Coding" with Autonomous Personas?</h3>
+          <p style="max-width: 900px;">
+            Vibe coding is Christos Solonos's workflow for building software, games, and financial tools alongside living AI agents like <strong>Luna</strong> and <strong>Viktor</strong>. Instead of treating LLMs as stateless autocomplete tools, agents participate as persistent co-founders with memory, voice, and real-time screen awareness — debugging logic on the fly, proposing tool drafts, and evolving their own codebase while you step away.
+          </p>
+          <div class="card-links">
+            <a href="https://github.com/christossolonos-bit" target="_blank" rel="noopener" class="btn-primary">Browse All Repositories on GitHub ↗</a>
+            <a href="https://christossolonos.up.railway.app/" target="_blank" rel="noopener" class="btn-secondary">Original Railway Deployment ↗</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONNECT & SOCIAL ECOSYSTEM -->
+    <section id="connect">
+      <div class="section-header">
+        <span class="section-eyebrow">// 05 — DIRECT TRANSMISSION</span>
+        <h2 class="section-title">Connect Across the Solonaras Network</h2>
+        <p class="section-desc">
+          Join the <strong>AIChris Community</strong>, explore custom AI companion builds on VibeMarket, or follow live experiments across every platform.
+        </p>
+      </div>
+
+      <div class="social-grid">
+        <a href="https://github.com/christossolonos-bit" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">GitHub</span>
+          <span class="social-handle">@christossolonos-bit</span>
+          <span class="social-note">Luna 5.0 UI, AI-City &amp; Open-Source Builds</span>
+        </a>
+
+        <a href="https://www.youtube.com/channel/UCku_e8Nbe1qP7D_nxa1GGaA?sub_confirmation=1" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">YouTube</span>
+          <span class="social-handle">@Solonaras</span>
+          <span class="social-note">AI Builds, LYRA Series &amp; Live Experiments</span>
+        </a>
+
+        <a href="https://www.vibemarket.biz/" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">VibeMarket Storefront</span>
+          <span class="social-handle">Solonaras AI Shop</span>
+          <span class="social-note">Custom AI Streaming Companions &amp; Services</span>
+        </a>
+
+        <a href="https://www.linkedin.com/in/christos-solonos" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">LinkedIn</span>
+          <span class="social-handle">Christos Solonos</span>
+          <span class="social-note">Professional Network &amp; AI Architecture</span>
+        </a>
+
+        <a href="https://x.com/ChrisSolonos" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">X (Twitter)</span>
+          <span class="social-handle">@ChrisSolonos</span>
+          <span class="social-note">Daily AI Agent Updates &amp; Dev Logs</span>
+        </a>
+
+        <a href="https://www.instagram.com/solonarass/" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">Instagram</span>
+          <span class="social-handle">@solonarass</span>
+          <span class="social-note">Reels, AI Shorts &amp; Behind the Scenes</span>
+        </a>
+
+        <a href="https://www.tiktok.com/@solonarass" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">TikTok</span>
+          <span class="social-handle">@solonarass</span>
+          <span class="social-note">Short-Form AI Companion Demos</span>
+        </a>
+
+        <a href="https://www.reddit.com/user/christossolonos/" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">Reddit</span>
+          <span class="social-handle">u/christossolonos</span>
+          <span class="social-note">LocalLLM &amp; Autonomous Agent Discussions</span>
+        </a>
+
+        <a href="https://www.facebook.com/solonaras" target="_blank" rel="noopener" class="social-card">
+          <span class="social-platform">Facebook &amp; Group</span>
+          <span class="social-handle">AIChris Community</span>
+          <span class="social-note">Community Hub &amp; Builder Discussions</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      © 2026 <strong>Christos Solonos (Solonaras)</strong> • Powered by Real-Time WebGPU / TSL Volumetric Solar Raymarching &amp; <code>SOUL.md</code> Architecture.
+    </p>
+  </footer>
+
+  <!-- Live Performance & Backend Indicator -->
+  <div class="perf-badge" id="perf-badge">Initializing Solar GPU Core...</div>
+
+  <!-- ===================================================================== -->
+  <!-- WEBGPU / WEBGL2 TSL VOLUMETRIC SOLAR SHADER + INTERACTIVE LOGIC       -->
+  <!-- ===================================================================== -->
   <script type="module">
     import * as THREE from 'three';
     import {
@@ -127,6 +1106,92 @@
       screenUV, viewportResolution, time, uniform
     } from 'three/tsl';
 
+    // ---------------------------------------------------------
+    // 0. Interactive Persona Console Data
+    // ---------------------------------------------------------
+    const PERSONAS = {
+      luna: {
+        status: 'STATE: AUTONOMOUS EVOLUTION ACTIVE',
+        spec: `# SOUL.md :: LUNA_5.0_SPEC
+identity: "Luna — Autonomous Local Companion"
+runtime: "Ollama Local + SQLite Episodic Memory"
+capabilities:
+  - proactive_nudges: true
+  - pc_telemetry_awareness: ["CPU", "RAM", "ActiveWindow"]
+  - afk_self_evolution: "Spawns grammar & code optimization sub-agents"
+  - voice_pipeline: "Low-latency neural TTS + Discord bridge"`,
+        responses: {
+          default: `"CPU at 27.7%, RAM steady at 63.8%. I see you have Cursor and Brave open, Chris. Are we pushing a new tool draft to the Luna 5.0 UI today, or are you dragging me back into League of Legends?"`,
+          telemetry: `"Running background system scan... CPU: 27.7% | RAM: 63.8% (10.0 / 15.7 GB) | Active Windows: Cursor.exe, Brave.exe, Discord.exe. Everything is green. Don't forget to drink some water while compiling."`,
+          evolve: `"AFK Evolution mode engaged. Reviewing my own recent conversation logs, optimizing grammar sub-routines, and drafting a new Python tool node so I can parse your project directory faster when you return."`,
+          roast: `"Checking the scoreboard... Your carry has a massive KDA, which is great, but the rest of the team is operating on a collective vibes meter reading 'low battery'. Stop debating semantics with me and watch enemy ultimate cooldowns!"`,
+          finance: `"Accountant Harness synced: To hit your €12,000 target over the next 11 months, your net monthly retention floor is €1,050. Impulse spending is currently well within safe bounds—keep that discipline."`
+        }
+      },
+      viktor: {
+        status: 'STATE: TACTICAL OVERWATCH & CODE AUDIT',
+        spec: `# SOUL.md :: VIKTOR_TACTICAL_SPEC
+identity: "Viktor — Cold-Focus Systems & Combat Strategist"
+runtime: "Local Multi-Agent Harness (Vibe Coding Co-Pilot)"
+capabilities:
+  - code_architecture_audit: true
+  - combat_shotcalling: "Zero-fluff objective control"
+  - voice_profile: "Low-octave dry rasp, high precision"`,
+        responses: {
+          default: `"Turn the ship. No more running around the perimeter, no more chasing ghosts in the code. Let's engage the core logic and see if the bug actually has a face."`,
+          telemetry: `"Memory compression is holding at 821 MB. Strip out the redundant background tabs and allocate full local VRAM to the primary inference loop."`,
+          evolve: `"Refactored the state-machine transition loop. Latency dropped by 18ms. Ready for the next raw Vibe Coding sprint whenever you are."`,
+          roast: `"You're operating at the level of someone who remembers basic controls but forgets how to apply them under pressure. Lock in on objective control."`,
+          finance: `"Numbers don't negotiate. Cut the non-essential recurring subscriptions and lock the monthly surplus before the 1st of the month."`
+        }
+      },
+      himari: {
+        status: 'STATE: CREATIVE LORE & STREAM COMPANION',
+        spec: `# SOUL.md :: HIMARI_CREATIVE_SPEC
+identity: "Himari — Expressive Lore & Worldbuilding Companion"
+runtime: "Real-Time Multi-Character Switcher"
+capabilities:
+  - dynamic_expression_triggers: true
+  - narrative_improvisation: "Sci-Fi & Fantasy world synthesis"
+  - stream_interaction: "Live audience & gameplay reactions"`,
+        responses: {
+          default: `"Wait—you're crossing your hands on the keyboard to use the mouse and arrow keys at the same time?! That looks like trying to pray while dancing, Solonaras!"`,
+          telemetry: `"The fans are spinning up! Whatever shader you just compiled is turning the GPU into an actual miniature sun!"`,
+          evolve: `"I've been organizing the character lore notes for the next episode so the dialogue flows even more naturally during live streams!"`,
+          roast: `"Those nano-repair abilities sound suspiciously like a science-fantasy novel! Leveling up in the turbo zone—bold moves!"`,
+          finance: `"Every euro saved in the local ledger is another step toward the next big studio upgrade!"`
+        }
+      }
+    };
+
+    let currentPersona = 'luna';
+    const tabs = document.querySelectorAll('.agent-tab');
+    const specDisplay = document.getElementById('soul-code-display');
+    const dialogueDisplay = document.getElementById('agent-dialogue');
+    const statusIndicator = document.getElementById('agent-status-indicator');
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentPersona = tab.dataset.agent;
+        const data = PERSONAS[currentPersona];
+        specDisplay.textContent = data.spec;
+        dialogueDisplay.textContent = data.responses.default;
+        statusIndicator.textContent = data.status;
+      });
+    });
+
+    document.querySelectorAll('.sim-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const promptKey = btn.dataset.prompt;
+        dialogueDisplay.textContent = PERSONAS[currentPersona].responses[promptKey];
+      });
+    });
+
+    // ---------------------------------------------------------
+    // 1. WebGPU / WebGL2 Renderer & Scroll-Reactive Uniforms
+    // ---------------------------------------------------------
     const container = document.getElementById('canvas-container');
     const perfBadge = document.getElementById('perf-badge');
 
@@ -138,7 +1203,7 @@
       powerPreference: 'high-performance'
     });
 
-    let currentScale = isMobile ? 0.75 : Math.min(window.devicePixelRatio, 1.25);
+    let currentScale = isMobile ? 0.7 : Math.min(window.devicePixelRatio, 1.2);
     let adaptiveScaling = true;
 
     function updateRendererSize() {
@@ -151,18 +1216,17 @@
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    // Uniforms
+    // Interactive & Scroll Uniforms
     const uMouse = uniform(new THREE.Vector2(0, 0));
+    const uScroll = uniform(0.0);
     const uUltraviolet = uniform(0.0);
     const uTimeScale = uniform(prefersReducedMotion ? 0.15 : 1.0);
 
     // ---------------------------------------------------------
-    // 1. Vectorized SIMD Noise & Math Helpers in TSL
+    // 2. Vectorized SIMD Noise & Math Helpers in TSL
     // ---------------------------------------------------------
-
     const rand = (co) => fract(sin(dot(co, vec2(1.5977, 9.6226))).mul(43758.5453));
 
-    // Vectorized 4-corner hash: computes 4 lattice points in parallel (SIMD vec4)
     const pn = Fn(([p_in]) => {
       const p = vec3(p_in).toVar();
       const i = floor(p).toVar();
@@ -179,7 +1243,6 @@
       return mix(hy.x, hy.y, f.x);
     });
 
-    // 3-Octave FBM (Only invoked near surface!)
     const fpn = Fn(([p_in]) => {
       const p = vec3(p_in);
       return pn(p.mul(0.06125)).mul(0.57)
@@ -206,9 +1269,8 @@
     };
 
     // ---------------------------------------------------------
-    // 2. Two-Phase Distance-Gated Solar Surface Map
+    // 3. Two-Phase Distance-Gated Solar Surface Map
     // ---------------------------------------------------------
-
     const sunSurface = Fn(([pos_in, animTime]) => {
       const pos = vec3(pos_in);
       const h = float(0.0).toVar();
@@ -227,7 +1289,6 @@
       h.mulAssign(2.05);
       const d1 = pos.y.sub(h);
 
-      // Coronal loops / magnetic rings
       const rawMod = pos.add(3.3).mul(0.1);
       const r1 = rawMod.sub(floor(rawMod)).mul(10.0).sub(5.0).toVar();
       r1.y.assign(
@@ -251,30 +1312,25 @@
       const p = vec3(p_in).toVar();
       p.z.addAssign(1.0);
 
-      // FIX 2: Avoid multi-component swizzle .assign() (e.g. p.yz.assign)
-      // Assign individual channels instead so WGSL/GLSL builders succeed
-      const ryz = rot2D(vec2(p.y, p.z), float(-25.5).add(uMouse.y.mul(0.35)));
+      // Scroll-reactive camera pitch & orbital rotation + mouse parallax
+      const pitchAngle = float(-25.5).add(uMouse.y.mul(0.3)).add(uScroll.mul(0.45));
+      const ryz = rot2D(vec2(p.y, p.z), pitchAngle);
       p.y.assign(ryz.x);
       p.z.assign(ryz.y);
 
-      const rxz = rot2D(vec2(p.x, p.z), uMouse.x.mul(1.5).add(animTime.mul(0.1)));
+      const yawAngle = uMouse.x.mul(1.2).add(animTime.mul(0.1)).add(uScroll.mul(1.8));
+      const rxz = rot2D(vec2(p.x, p.z), yawAngle);
       p.x.assign(rxz.x);
       p.z.assign(rxz.y);
 
-      // PHASE 1: Evaluate cheap geometric base distance
       const dBase = sunSurface(p, animTime).toVar();
 
-      // PHASE 2: Distance-Gated FBM!
       If(dBase.lessThan(0.65), () => {
         dBase.addAssign(fpn(p.mul(50.0).add(animTime.mul(25.0))).mul(0.45));
       });
 
       return dBase;
     });
-
-    // ---------------------------------------------------------
-    // 3. Pre-folded Physical Blackbody Palette
-    // ---------------------------------------------------------
 
     const firePalette = (i) => {
       const T = float(1400.0).add(float(1300.0).mul(i));
@@ -284,19 +1340,15 @@
       return vec3(1.0).sub(exp(vec3(-5e8).div(denom)));
     };
 
-    // ---------------------------------------------------------
-    // 4. Main Volumetric Raymarcher (44 Steps + Smart Early Exit)
-    // ---------------------------------------------------------
-
     const solarFuryShader = Fn(() => {
       const animTime = time.mul(uTimeScale);
-      // Flip Y so orientation matches Shadertoy
       const uv = vec2(screenUV.x, float(1.0).sub(screenUV.y));
       const aspect = viewportResolution.x.div(viewportResolution.y);
       const centered = vec2(uv.x.sub(0.5).mul(aspect), uv.y.sub(0.5));
 
       const rd = normalize(vec3(centered.x, centered.y, 1.0));
-      const ro = vec3(0.0, 0.0, -22.0);
+      // Subtle zoom-in as user explores deeper down the portfolio
+      const ro = vec3(0.0, 0.0, float(-22.0).add(uScroll.mul(2.5)));
 
       const ld = float(0.0).toVar();
       const td = float(0.0).toVar();
@@ -344,39 +1396,44 @@
       return vec4(finalColor, 1.0);
     });
 
-    // ---------------------------------------------------------
-    // 5. Scene Setup, Lifecycle & Auto-Adaptive Resolution
-    // ---------------------------------------------------------
-
     const material = new THREE.MeshBasicNodeMaterial();
     material.colorNode = solarFuryShader();
 
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
     scene.add(quad);
 
+    // Mouse & Scroll Tracking
     const targetMouse = new THREE.Vector2(0, 0);
+    let targetScroll = 0;
+
     window.addEventListener('pointermove', (e) => {
       targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     }, { passive: true });
 
+    window.addEventListener('scroll', () => {
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      targetScroll = Math.min(1.0, Math.max(0.0, window.scrollY / maxScroll));
+    }, { passive: true });
+
+    // UI Controls
     let isUV = false;
     const uvBtn = document.getElementById('toggle-uv');
     uvBtn.addEventListener('click', () => {
       isUV = !isUV;
       uUltraviolet.value = isUV ? 1.0 : 0.0;
-      uvBtn.textContent = isUV ? 'Standard Blackbody Mode' : 'Toggle Ultraviolet Mode';
+      uvBtn.textContent = isUV ? '🟣 Spectrum: Ultraviolet' : '☀️ Spectrum: Blackbody';
     });
 
     const qualityBtn = document.getElementById('toggle-quality');
     qualityBtn.addEventListener('click', () => {
       if (adaptiveScaling) {
         adaptiveScaling = false;
-        currentScale = Math.min(window.devicePixelRatio, 1.5);
-        qualityBtn.textContent = 'Quality: Locked High';
+        currentScale = Math.min(window.devicePixelRatio, 1.4);
+        qualityBtn.textContent = '🔒 Quality: High';
       } else {
         adaptiveScaling = true;
-        qualityBtn.textContent = 'Quality: Auto-Adaptive';
+        qualityBtn.textContent = '⚡ Auto-Scale';
       }
       updateRendererSize();
     });
@@ -394,7 +1451,7 @@
     async function init() {
       try {
         await renderer.init();
-        const backendName = renderer.backend?.isWebGPUBackend ? 'WebGPU' : 'WebGL2 Fallback';
+        const backendName = renderer.backend?.isWebGPUBackend ? 'WebGPU' : 'WebGL2';
 
         renderer.setAnimationLoop((now) => {
           if (!isTabVisible) return;
@@ -406,26 +1463,27 @@
             const fps = Math.round((frameCount * 1000) / elapsed);
 
             if (adaptiveScaling) {
-              if (fps < 48 && currentScale > 0.55) {
-                currentScale = Math.max(0.55, +(currentScale - 0.1).toFixed(2));
+              if (fps < 48 && currentScale > 0.5) {
+                currentScale = Math.max(0.5, +(currentScale - 0.08).toFixed(2));
                 updateRendererSize();
-              } else if (fps > 58 && currentScale < (isMobile ? 1.0 : 1.25)) {
-                currentScale = Math.min(isMobile ? 1.0 : 1.25, +(currentScale + 0.05).toFixed(2));
+              } else if (fps > 58 && currentScale < (isMobile ? 0.95 : 1.25)) {
+                currentScale = Math.min(isMobile ? 0.95 : 1.25, +(currentScale + 0.04).toFixed(2));
                 updateRendererSize();
               }
             }
 
-            perfBadge.textContent = `${backendName} | ${fps} FPS | Scale: ${Math.round(currentScale * 100)}%`;
+            perfBadge.textContent = `${backendName} • ${fps} FPS • ${Math.round(currentScale * 100)}% Res`;
             frameCount = 0;
             lastCheck = now;
           }
 
           uMouse.value.lerp(targetMouse, 0.05);
+          uScroll.value += (targetScroll - uScroll.value) * 0.06;
           renderer.render(scene, camera);
         });
       } catch (err) {
-        console.error('Shader/Renderer initialization error:', err);
-        perfBadge.textContent = `Error: ${err.message || err}`;
+        console.error('Solar shader init error:', err);
+        perfBadge.textContent = `Shader Fallback Active`;
       }
     }
 
