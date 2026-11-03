@@ -77,7 +77,6 @@
     .brand-title { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.12em; text-transform: uppercase; }
     .hud-readout { display: flex; align-items: center; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-dim); }
     .hud-metric span { color: var(--solar-gold); font-weight: 600; }
-    .hud-controls { display: flex; align-items: center; gap: 0.6rem; }
 
     aside.chapter-rail {
       position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
@@ -273,11 +272,6 @@
       <div class="hud-metric">ALTITUDE: <span id="hud-altitude">22.0 AU</span></div>
       <div class="hud-metric">CORE TEMP: <span id="hud-kelvin">2,700 K</span></div>
     </div>
-
-    <div class="hud-controls">
-      <button class="btn-hud" id="toggle-uv" title="Toggle Ultraviolet Flare Spectrum">☀️ Spectrum: Blackbody</button>
-      <button class="btn-hud" id="toggle-quality" title="Toggle Adaptive Resolution Scaling">⚡ Auto-Scale</button>
-    </div>
   </header>
 
   <aside class="chapter-rail" aria-label="Story Chapters">
@@ -300,12 +294,6 @@
 
   <main>
     <section class="story-act in-view" id="act-1" data-act-index="0">
-      <div class="act-pill">
-        <span>● ACT I // ORBITAL INSERTION</span>
-        <span>•</span>
-        <span>LOCAL-FIRST AI ARCHITECT &amp; CREATIVE DIRECTOR</span>
-      </div>
-
       <h1 class="hero-display">
         <span class="solar-gradient-text">Christos Solonos</span><br />
         Where Code Has a Soul.
@@ -649,8 +637,6 @@ capabilities:
     const solar = startSolar({
       container: document.getElementById('canvas-container'),
       badge: document.getElementById('perf-badge'),
-      uvButton: document.getElementById('toggle-uv'),
-      qualityButton: document.getElementById('toggle-quality'),
       onProgress: (depth) => {
         scrollPctReadout.textContent = `${Math.round(depth * 100)}% DEPTH`;
       }

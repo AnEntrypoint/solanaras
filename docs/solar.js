@@ -170,7 +170,7 @@ const solarFuryShader = Fn(([mouse, scroll, ultraviolet, timeScale]) => {
   return vec4(finalColor.mul(float(EXPOSURE)), 1.0);
 });
 
-export function startSolar({ container, badge, uvButton = null, qualityButton = null, onProgress = null }) {
+export function startSolar({ container, badge, onProgress = null }) {
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -192,8 +192,6 @@ export function startSolar({ container, badge, uvButton = null, qualityButton = 
   const targetMouse = new Vector2(0, 0);
   let targetScroll = 0;
   let targetUV = 0.0;
-  let manualUV = false;
-  let adaptiveScaling = true;
   let currentScale = isMobile ? 0.7 : Math.min(window.devicePixelRatio, 1.2);
   let renderer = null;
   let isTabVisible = true;
@@ -238,7 +236,7 @@ export function startSolar({ container, badge, uvButton = null, qualityButton = 
     const elapsed = now - lastCheck;
     if (elapsed >= 500) {
       const fps = Math.round((frameCount * 1000) / elapsed);
-      if (adaptiveScaling) adaptScale(fps);
+      adaptScale(fps);
       badge.textContent = `${backendName} • ${fps} FPS • ${Math.round(currentScale * 100)}% Res`;
       frameCount = 0;
       lastCheck = now;
@@ -285,7 +283,7 @@ export function startSolar({ container, badge, uvButton = null, qualityButton = 
   }
 
   function setUltraviolet(level) {
-    if (!manualUV) targetUV = level;
+    targetUV = level;
   }
 
   window.addEventListener('pointermove', (e) => {
@@ -303,23 +301,6 @@ export function startSolar({ container, badge, uvButton = null, qualityButton = 
 
   document.addEventListener('visibilitychange', () => {
     isTabVisible = !document.hidden;
-  }, { signal });
-
-  uvButton?.addEventListener('click', () => {
-    manualUV = !manualUV;
-    targetUV = manualUV ? 1.0 : 0.0;
-    uvButton.textContent = manualUV ? '🟣 Spectrum: Ultraviolet' : '☀️ Spectrum: Blackbody';
-  }, { signal });
-
-  qualityButton?.addEventListener('click', () => {
-    adaptiveScaling = !adaptiveScaling;
-    if (adaptiveScaling) {
-      qualityButton.textContent = '⚡ Auto-Scale';
-    } else {
-      currentScale = Math.min(window.devicePixelRatio, 1.4);
-      qualityButton.textContent = '🔒 Quality: High';
-    }
-    updateRendererSize();
   }, { signal });
 
   function dispose() {
