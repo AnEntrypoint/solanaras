@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Solar Fury — High-Performance TSL Background</title>
@@ -366,4 +365,79 @@
 
     // Smooth pointer parallax (works for both mouse & touch)
     const targetMouse = new THREE.Vector2(0, 0);
-    window.addEven
+    window.addEventListener('pointermove', (e) => {
+      targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    }, { passive: true });
+
+    // UI Controls
+    let isUV = false;
+    const uvBtn = document.getElementById('toggle-uv');
+    uvBtn.addEventListener('click', () => {
+      isUV = !isUV;
+      uUltraviolet.value = isUV ? 1.0 : 0.0;
+      uvBtn.textContent = isUV ? 'Standard Blackbody Mode' : 'Toggle Ultraviolet Mode';
+    });
+
+    const qualityBtn = document.getElementById('toggle-quality');
+    qualityBtn.addEventListener('click', () => {
+      if (adaptiveScaling) {
+        adaptiveScaling = false;
+        currentScale = Math.min(window.devicePixelRatio, 1.5);
+        qualityBtn.textContent = 'Quality: Locked High';
+      } else {
+        adaptiveScaling = true;
+        qualityBtn.textContent = 'Quality: Auto-Adaptive';
+      }
+      updateRendererSize();
+    });
+
+    window.addEventListener('resize', updateRendererSize, { passive: true });
+
+    // Pause rendering when tab is hidden to save battery
+    let isTabVisible = true;
+    document.addEventListener('visibilitychange', () => {
+      isTabVisible = !document.hidden;
+    });
+
+    // Rolling FPS monitor & dynamic resolution scaler
+    let frameCount = 0;
+    let lastCheck = performance.now();
+
+    async function init() {
+      await renderer.init();
+      const backendName = renderer.backend?.isWebGPUBackend ? 'WebGPU' : 'WebGL2 Fallback';
+
+      renderer.setAnimationLoop((now) => {
+        if (!isTabVisible) return;
+
+        frameCount++;
+        const elapsed = now - lastCheck;
+
+        if (elapsed >= 500) {
+          const fps = Math.round((frameCount * 1000) / elapsed);
+
+          if (adaptiveScaling) {
+            if (fps < 48 && currentScale > 0.55) {
+              currentScale = Math.max(0.55, +(currentScale - 0.1).toFixed(2));
+              updateRendererSize();
+            } else if (fps > 58 && currentScale < (isMobile ? 1.0 : 1.25)) {
+              currentScale = Math.min(isMobile ? 1.0 : 1.25, +(currentScale + 0.05).toFixed(2));
+              updateRendererSize();
+            }
+          }
+
+          perfBadge.textContent = `${backendName} | ${fps} FPS | Scale: ${Math.round(currentScale * 100)}%`;
+          frameCount = 0;
+          lastCheck = now;
+        }
+
+        uMouse.value.lerp(targetMouse, 0.05);
+        renderer.render(scene, camera);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
